@@ -1,0 +1,17 @@
+# .gitignore
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+
+# Ignore any file with .tf extension except main.tf and variables.tf
+*.tf
+!main.tf
+!variables.tf
+
+# Ignore files containing sensitive information
+*.tfvars
+
+# Exclude system files
+.DS_Store
