@@ -1,0 +1,69 @@
+# Question 3
+
+SELECT 
+    DATE(lpep_pickup_datetime) AS trip_date,
+    COUNT(*) AS total_trips
+FROM 
+    yellow_taxi_trips__2019
+WHERE 
+    DATE(lpep_pickup_datetime) = '2019-09-18'
+    AND DATE(lpep_dropoff_datetime) = '2019-09-18'
+GROUP BY 
+    trip_date;
+
+# Question 4
+
+SELECT 
+    DATE(lpep_pickup_datetime) AS trip_date,
+    trip_distance
+FROM 
+    yellow_taxi_trips_2019
+WHERE 
+    trip_distance = (
+        SELECT MAX(trip_distance) 
+        FROM yellow_taxi_trips_2019
+    );
+
+
+# Question 5
+
+SELECT
+    zpu."Borough",
+    SUM(total_amount) AS total_amount_sum
+FROM
+    yellow_taxi_trips_2019 t
+JOIN
+    zones_2019 zpu ON t."PULocationID" = zpu."LocationID"
+JOIN
+    zones_2019 zdo ON t."DOLocationID" = zdo."LocationID"
+WHERE
+    DATE(lpep_pickup_datetime) = '2019-09-18' AND zpu."Borough" != 'Unknown'
+GROUP BY
+    zpu."Borough"
+HAVING
+    SUM(total_amount) > 50000
+ORDER BY
+    total_amount_sum DESC
+LIMIT 3;
+
+
+
+# Question 6
+
+SELECT
+    zdo."Zone",
+    MAX(tip_amount) AS max_tip_amount
+FROM
+    yellow_taxi_trips_2019 t
+JOIN
+    zones_2019 zpu ON t."PULocationID" = zpu."LocationID"
+JOIN
+    zones_2019 zdo ON t."DOLocationID" = zdo."LocationID"
+WHERE
+    EXTRACT(MONTH FROM lpep_pickup_datetime) = 9
+    AND zpu."Zone" = 'Astoria'
+GROUP BY
+    zdo."Borough"
+ORDER BY
+    max_tip_amount DESC
+LIMIT 1;
